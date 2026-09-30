@@ -1,0 +1,10 @@
+node_modules/
+coverage/
+*.tsbuildinfo
+.DS_Store
+
+# Secrets and machine-local config
+.env
+.env.*
+!.env.example
+.agentic/config.local.json

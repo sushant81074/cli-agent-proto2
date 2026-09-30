@@ -1,0 +1,10 @@
+# Bun is the package manager and script runner only. Node runs the code (ADR-001).
+
+# Don't auto-load .env: Node doesn't. Pass `node --env-file=.env` when you want one.
+env = false
+
+[install]
+# Pin exact versions.
+exact = true
+# Each package gets its own node_modules, so an import it doesn't declare fails immediately.
+linker = "isolated"
