@@ -7,4 +7,4 @@ coverage/
 .env
 .env.*
 !.env.example
-.agentic/config.local.json
+.agentic/config.json

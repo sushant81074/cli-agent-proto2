@@ -1,7 +1,7 @@
 {
     "llm": {
         "baseUrl": "https://openrouter.ai/api/v1",
-        "apiKeyEnv": "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",
+        "apiKeyEnv": "",
         "models": {
             "fast": "openrouter/free",
             "balanced": "openai/gpt-oss-120b",
