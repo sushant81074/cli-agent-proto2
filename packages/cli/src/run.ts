@@ -1,0 +1,17 @@
+import { logger } from "./logger.ts";
+import { ExitCode } from "./exit.ts";
+import { Command, CommanderError } from "commander";
+
+export const runProgram = async (program: Command) => {
+    try {
+        await program.parseAsync(process.argv);
+    } catch (error) {
+        if (error instanceof CommanderError) {
+            process.exitCode = ExitCode.UsageError;
+            return;
+        }
+        logger.error({ err: error }, "CLI command failed");
+
+        process.exitCode = ExitCode.RuntimeFailure;
+    }
+};

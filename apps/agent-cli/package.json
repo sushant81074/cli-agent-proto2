@@ -11,6 +11,7 @@
     "start": "node src/index.ts"
   },
   "dependencies": {
+    "@agentic/cli": "workspace:*",
     "@agentic/core": "workspace:*"
   }
 }
