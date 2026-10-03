@@ -1,7 +1,12 @@
 #!/usr/bin/env node
-// The `agent` binary. From P1 on, each project app exports register(program) and is mounted here.
 
-import { createAbortController, createProgram, runProgram } from "@agentic/cli";
+import { type AppContext, createAbortController, createProgram, runProgram } from "@agentic/cli";
+import { register as registerP01 } from "@agentic/p01-text";
 
-createAbortController();
-await runProgram(createProgram());
+const abort = createAbortController();
+const ctx: AppContext = { signal: abort.signal };
+const program = createProgram();
+
+registerP01(program, ctx);
+
+await runProgram(program, ctx);

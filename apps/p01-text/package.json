@@ -3,7 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "dependencies": {
+    "zod": "4.6.5",
+    "commander": "15.0.0",
     "@agentic/cli": "workspace:*",
     "@agentic/core": "workspace:*",
     "@agentic/llm": "workspace:*",

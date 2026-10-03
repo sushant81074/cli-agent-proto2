@@ -1,11 +1,15 @@
 {
   "llm": {
     "baseUrl": "https://openrouter.ai/api/v1",
-    "apiKeyEnv": "",
+    "apiKeyEnv": "OPENROUTER_KEY",
     "models": {
-      "fast": "openrouter/free",
+      "fast": "cohere/north-mini-code:free",
       "balanced": "openai/gpt-oss-120b",
-      "deep": "poolside/laguna-xs-2.1-free"
+      "deep": "poolside/laguna-xs-2.1-free",
+      "heavy-logic": "qwen/qwen3-coder:free",
+      "planning": "nvidia/nemotron-3-ultra:free",
+      "agentic": "poolside/laguna-s-2.1:free",
+      "fallback": "openrouter/free"
     },
     "routing": {
       "allowFallbacks": true,

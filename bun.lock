@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "agentic",
+      "dependencies": {
+        "zod": "4.6.5",
+      },
       "devDependencies": {
         "@biomejs/biome": "2.5.14",
         "@types/node": "24.19.0",
@@ -20,6 +23,7 @@
       "dependencies": {
         "@agentic/cli": "workspace:*",
         "@agentic/core": "workspace:*",
+        "@agentic/p01-text": "workspace:*",
       },
     },
     "apps/p01-text": {
@@ -30,6 +34,7 @@
         "@agentic/core": "workspace:*",
         "@agentic/llm": "workspace:*",
         "@agentic/trace": "workspace:*",
+        "commander": "15.0.0",
       },
     },
     "packages/cli": {

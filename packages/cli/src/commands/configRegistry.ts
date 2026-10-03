@@ -8,11 +8,11 @@ export const registerConfigCommand = (program: Command) => {
     .description("Show resolved configuration")
     .option("--json", "Output JSON")
     .action(async (options: { json?: boolean }) => {
-      const config = await loadAgentConfig();
+      const agentConfig = await loadAgentConfig();
       if (options.json) {
-        console.log(JSON.stringify(config));
+        console.log(JSON.stringify(agentConfig));
       } else {
-        console.log(config);
+        console.log(agentConfig);
       }
     });
 };

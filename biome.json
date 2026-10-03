@@ -27,6 +27,9 @@
       "preset": "recommended",
       "correctness": {
         "noUndeclaredDependencies": "error"
+      },
+      "suspicious": {
+        "noShadow": "error"
       }
     }
   },

@@ -8,10 +8,10 @@ describe("execute", () => {
     const models: string[] = [];
 
     const provider: ILLMProvider = {
-      async *complete(request: TModelRequest): AsyncIterable<TStreamEvent> {
-        models.push(request.model);
+      async *complete(req: TModelRequest): AsyncIterable<TStreamEvent> {
+        models.push(req.model);
 
-        if (request.model === "model-a") {
+        if (req.model === "model-a") {
           yield {
             type: "error",
             error: new LLMError("Primary model failed", 502, true),
