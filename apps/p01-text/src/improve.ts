@@ -1,6 +1,6 @@
-import type { ILLMProvider, TModelRequest, TMessage } from "@agentic/llm";
-import { PromptImproveSchema, type TPromptImprove } from "./schemas/prompt-improve.ts";
+import type { ILLMProvider, TMessage, TModelRequest } from "@agentic/llm";
 import { OutputValidationError } from "./error.ts";
+import { PromptImproveSchema, type TPromptImprove } from "./schemas/prompt-improve.ts";
 
 export type ImproveHooks = {
   onReasoning?: (text: string) => void;
@@ -8,15 +8,16 @@ export type ImproveHooks = {
   onInfo?: (info: string) => void;
 };
 
-type TParseResult = { success: true; data: TPromptImprove; } | { success: false; errorDescription: string; };
+type TParseResult =
+  | { success: true; data: TPromptImprove }
+  | { success: false; errorDescription: string };
 
 export async function executeLLMCall(
   provider: ILLMProvider,
   request: TModelRequest,
   messages: TMessage[],
-  hooks: ImproveHooks = {}
+  hooks: ImproveHooks = {},
 ): Promise<string> {
-
   let text = "";
   request = { ...request, messages: [...messages] };
 
@@ -37,7 +38,6 @@ export async function executeLLMCall(
   request.signal.throwIfAborted();
   return text;
 }
-
 
 function parseAndValidate(rawText: string): TParseResult {
   const jsonString = rawText
@@ -60,7 +60,8 @@ function parseAndValidate(rawText: string): TParseResult {
 
     return { success: false, errorDescription };
   } catch (error) {
-    const message = error instanceof SyntaxError ? error.message : "Invalid JSON formatting structure";
+    const message =
+      error instanceof SyntaxError ? error.message : "Invalid JSON formatting structure";
     return { success: false, errorDescription: `- JSON parsing mismatch: ${message}` };
   }
 }
@@ -68,7 +69,7 @@ function parseAndValidate(rawText: string): TParseResult {
 export async function improvePrompt(
   provider: ILLMProvider,
   request: TModelRequest,
-  hooks: ImproveHooks = {}
+  hooks: ImproveHooks = {},
 ): Promise<TPromptImprove> {
   const activeMessages = [...request.messages];
 
@@ -93,7 +94,7 @@ export async function improvePrompt(
           text: `Your response failed validation:\n${firstParse.errorDescription}\nReturn only the corrected JSON object. Keep everything that was correct.`,
         },
       ],
-    }
+    },
   );
 
   // Turn 2: Automated healing execution
@@ -107,6 +108,6 @@ export async function improvePrompt(
   throw new OutputValidationError(
     "Model response failed schema compliance after full correction budget tracking.",
     repairRawOutput,
-    repairParse.errorDescription
+    repairParse.errorDescription,
   );
 }

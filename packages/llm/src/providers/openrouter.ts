@@ -20,17 +20,19 @@ type TOpenRouterRequestBody = {
   max_tokens?: number | undefined;
   temperature?: number | undefined;
   stream: true;
-  provider?: {
-    sort?: string | undefined;
-    order?: string[] | undefined;
-    only?: string[] | undefined;
-    ignore?: string[] | undefined;
-    allow_fallbacks?: boolean | undefined;
-    require_parameters?: boolean | undefined;
-    data_collection?: "allow" | "deny" | undefined;
-    zdr?: boolean | undefined;
-    max_price?: number | undefined;
-  } | undefined;
+  provider?:
+    | {
+        sort?: string | undefined;
+        order?: string[] | undefined;
+        only?: string[] | undefined;
+        ignore?: string[] | undefined;
+        allow_fallbacks?: boolean | undefined;
+        require_parameters?: boolean | undefined;
+        data_collection?: "allow" | "deny" | undefined;
+        zdr?: boolean | undefined;
+        max_price?: number | undefined;
+      }
+    | undefined;
 };
 
 type TOpenRouterChunk = {
@@ -53,8 +55,8 @@ type TOpenRouterUsage = {
   prompt_tokens?: number;
   completion_tokens?: number;
   cost?: number;
-  prompt_tokens_details?: { cached_tokens?: number; cache_write_tokens?: number; };
-  completion_tokens_details?: { reasoning_tokens?: number; };
+  prompt_tokens_details?: { cached_tokens?: number; cache_write_tokens?: number };
+  completion_tokens_details?: { reasoning_tokens?: number };
 };
 
 function normalizeUsage(u: TOpenRouterUsage): TUsage {
@@ -79,7 +81,7 @@ export class OpenRouterProvider implements ILLMProvider {
       baseDelayMs: number;
       maxDelayMs: number;
     },
-  ) { }
+  ) {}
 
   complete(request: TModelRequest): AsyncIterable<TStreamEvent> {
     return this.stream(request);
@@ -141,12 +143,12 @@ export class OpenRouterProvider implements ILLMProvider {
       if (choice?.delta?.reasoning) yield { type: "reasoning.delta", text: choice.delta.reasoning };
       if (parsed.usage) yield { type: "usage", usage: normalizeUsage(parsed.usage) };
       if (choice?.finish_reason) stopReason = this.mapStopReason(choice.finish_reason);
-
     }
 
     // No [DONE]: either we were cancelled, or the response is incomplete.
     request.signal.throwIfAborted();
-    if (!hasDoneYeilded) throw new LLMError("OpenRouter stream ended before [DONE]", undefined, true);
+    if (!hasDoneYeilded)
+      throw new LLMError("OpenRouter stream ended before [DONE]", undefined, true);
   }
 
   private buildRequestBody(request: TModelRequest): TOpenRouterRequestBody {
@@ -166,27 +168,32 @@ export class OpenRouterProvider implements ILLMProvider {
       stream: true,
       provider: request.provider
         ? {
-          sort: request.provider.sort,
-          order: request.provider.order,
-          only: request.provider.only,
-          ignore: request.provider.ignore,
-          allow_fallbacks: request.provider.allowFallbacks,
-          require_parameters: request.provider.requireParameters,
-          data_collection: request.provider.dataCollection,
-          zdr: request.provider.zdr,
-          max_price: request.provider.maxPrice,
-        }
+            sort: request.provider.sort,
+            order: request.provider.order,
+            only: request.provider.only,
+            ignore: request.provider.ignore,
+            allow_fallbacks: request.provider.allowFallbacks,
+            require_parameters: request.provider.requireParameters,
+            data_collection: request.provider.dataCollection,
+            zdr: request.provider.zdr,
+            max_price: request.provider.maxPrice,
+          }
         : undefined,
     };
   }
 
   private mapStopReason(reason: string): TStopReason {
     switch (reason) {
-      case "tool_calls": return "tool_use";
-      case "length": return "max_tokens";
-      case "content_filter": return "content_filter";
-      case "stop": return "end_turn";
-      default: return "error";
+      case "tool_calls":
+        return "tool_use";
+      case "length":
+        return "max_tokens";
+      case "content_filter":
+        return "content_filter";
+      case "stop":
+        return "end_turn";
+      default:
+        return "error";
     }
   }
 }
