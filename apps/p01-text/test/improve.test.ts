@@ -1,7 +1,7 @@
 import type { ILLMProvider, TMessage, TModelRequest } from "@agentic/llm";
 import { describe, expect, it, vi } from "vitest";
 import { OutputValidationError } from "../src/error.ts";
-import { improvePrompt } from "../src/improve.ts";
+import { improvePrompt } from "../src/improve/improve.ts";
 
 // Helper function to build standard base requests for testing
 function createBaseRequest(messages: TMessage[]): TModelRequest {

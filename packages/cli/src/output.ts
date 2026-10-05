@@ -1,14 +1,16 @@
-export type OutputMode = "human" | "json";
+export type TOutputMode = "human" | "json";
 
-export type OutputOptions = {
-  mode: OutputMode;
+export type TOutputOptions = {
+  mode: TOutputMode;
   showReasoning?: boolean;
 };
 
-export type Output = {
-  readonly mode: OutputMode;
+export type TOutput = {
+  readonly mode: TOutputMode;
   /** The command's answer. The ONLY thing that ever goes to stdout. */
   result<T>(data: T, toHuman: (data: T) => string): void;
+  /** Streams answer text to stdout as it arrives (human mode only; JSON mode prints via result). */
+  stream(text: string): void;
   /** Progress and diagnostics for humans, written to stderr. */
   info(message: string): void;
   /** Model reasoning: stderr, human mode only, and only when asked for. */
@@ -18,7 +20,7 @@ export type Output = {
 const DIM = "\x1b[2m";
 const UNDIM = "\x1b[22m";
 
-export const createOutput = ({ mode, showReasoning = false }: OutputOptions): Output => {
+export const createOutput = ({ mode, showReasoning = false }: TOutputOptions): TOutput => {
   const { stdout, stderr } = process;
   let reasoningOpen = false;
 
@@ -36,6 +38,12 @@ export const createOutput = ({ mode, showReasoning = false }: OutputOptions): Ou
     result<T>(data: T, toHuman: (data: T) => string): void {
       closeReasoning();
       stdout.write(mode === "json" ? `${JSON.stringify(data)}\n` : `${toHuman(data)}\n`);
+    },
+
+    stream(text: string): void {
+      if (mode === "json") return;
+      closeReasoning();
+      stdout.write(text);
     },
 
     info(message: string): void {
